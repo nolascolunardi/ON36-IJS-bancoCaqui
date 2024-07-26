@@ -1,0 +1,19 @@
+[
+  {
+    "idCliente": 1,
+    "nome": "João",
+    "cpf": "11112312312",
+    "email": "joao@gmail.com",
+    "telefone": "9999-9999",
+    "nascimento": "1990-01-01",
+    "endereco": "rua dos bobo, 0, centro, cidade"
+  },
+  {
+    "idCliente": 2,
+    "nome": "Jisoo",
+    "cpf": "22233445566",
+    "email": "jisoo@example.com",
+    "telefone": "8888-8888",
+    "endereco": "avenida das flores, 123, bairro jardim, cidade"
+  }
+]
