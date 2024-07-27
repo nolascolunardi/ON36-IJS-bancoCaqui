@@ -1,0 +1,35 @@
+[
+  {
+    "idCliente": 1,
+    "nome": "João",
+    "cpf": "11112312312",
+    "email": "joao@gmail.com",
+    "telefone": "9999-9999",
+    "nascimento": "1990-01-01",
+    "endereco": "rua dos bobo, 0, centro, cidade"
+  },
+  {
+    "idCliente": 2,
+    "nome": "Jisoo",
+    "cpf": "22233445566",
+    "email": "jisoo@example.com",
+    "telefone": "8888-8888",
+    "endereco": "avenida das flores, 123, bairro jardim, cidade"
+  },
+  {
+    "idCliente": 3,
+    "nome": "Mingi",
+    "cpf": "44455667788",
+    "email": "mingi@example.com",
+    "telefone": "6666-6666",
+    "endereco": "praça central, 789, bairro união, cidade"
+  },
+  {
+    "idCliente": 4,
+    "nome": "Momo",
+    "cpf": "33344556677",
+    "email": "momo@example.com",
+    "telefone": "7777-7777",
+    "endereco": "rua das palmeiras, 456, bairro primavera, cidade"
+  }
+]
