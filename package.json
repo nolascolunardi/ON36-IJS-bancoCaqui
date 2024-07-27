@@ -1,0 +1,14 @@
+{
+  "name": "bancocaqui",
+  "version": "1.0.0",
+  "description": "O Banco Caqui é um banco comunitário localizado em Mogi das Cruzes, uma cidade do interior de São Paulo conhecida como a \"terra do caqui\". Nosso objetivo é promover o desenvolvimento da economia local, especialmente em territórios de baixa renda de Mogi das Cruzes, por meio do apoio à economia popular e solidária.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nolasco",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.5.4"
+  }
+}
