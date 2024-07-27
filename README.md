@@ -19,7 +19,3 @@ O Banco Caqui fornece serviços como:
 - Cartão de crédito popular solidário, para consumo familiar/pessoal, sem juros e com limite.
 - Gerentes de contas do banco comunitário para suporte aos clientes.
 - Prestação de contas diário e semanal do banco para toda a comunidade.
-
-
-## 📌 Diagrama de Classe
-<img src="diagramaBC.jpeg" alt="Diagrama de Classe" width="500"/>
