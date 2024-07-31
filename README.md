@@ -19,3 +19,44 @@ O Banco Caqui fornece serviços como:
 - Cartão de crédito popular solidário, para consumo familiar/pessoal, sem juros e com limite.
 - Gerentes de contas do banco comunitário para suporte aos clientes.
 - Prestação de contas diário e semanal do banco para toda a comunidade.
+
+## 📌 Diagrama de Classe
+<img src="diagramaBC.jpeg" alt="Diagrama de Classe" width="500"/>
+
+## Intalação
+
+```bash
+$ npm install
+```
+
+## Inicializando o app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+
+
+## Licença
+
+Nest is [MIT licensed](LICENSE).
