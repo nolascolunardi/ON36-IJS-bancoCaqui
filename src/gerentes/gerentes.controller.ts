@@ -7,7 +7,7 @@ import { GerentesService } from './gerentes.service';
 export class GerentesController {
   constructor(private readonly GerentesService: GerentesService) {}
 
-  @Post('/criar')
+  @Post('/cadastrar')
   createGerente(
     @Body('registro') registro: string,
     @Body('nome') nome: string,
