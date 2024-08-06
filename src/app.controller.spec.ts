@@ -16,7 +16,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Bem vindo ao banco caqui!"', () => {
-      expect(appController.getMensagem()).toBe('Bem vindo ao banco caqui!');
+      expect(appController.getHello()).toBe('Bem vindo ao banco caqui!');
     });
   });
 });

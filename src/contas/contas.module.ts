@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ContasController } from './contas.controller';
 import { ContasService } from './contas.service';
+import { ContasController } from './contas.controller';
+import { ContasRepository } from './models/repository/contas.repository';
+import { ContasFactory } from './factories/contas.factory';
 
 @Module({
+  providers: [ContasService, ContasRepository, ContasFactory],
   controllers: [ContasController],
-  providers: [ContasService]
 })
 export class ContasModule {}

@@ -1,37 +1,25 @@
 import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { TipoConta } from '../contas/contas.model';
 import { ClienteService } from './clientes.service';
+import { Cliente } from './models/entity/cliente';
 
 @Controller('clientes')
 export class ClientesController {
   constructor(private readonly ClientesService: ClienteService) {}
 
-  @Post('/abrirConta')
-  createConta(
-    @Body('idCliente') idCliente: number,
-    @Body('numeroConta') numeroConta: string,
-    @Body('tipoConta') tipoConta: TipoConta,
-    @Body('saldo') saldo: number,
-  ) {
-    return this.ClientesService.createConta(
-      idCliente,
-      numeroConta,
-      tipoConta,
-      saldo,
-    );
+  @Post('/cadastrar')
+  createCliente(
+    @Body('nome') nome: string,
+    @Body('cpf') cpf: string,
+    @Body('email') email: string,
+    @Body('telefone') telefone: string,
+    @Body('endereco') endereco: string,
+  ): Cliente {
+    return this.ClientesService.createCliente(nome, cpf, email, telefone, endereco);
   }
 
-  @Patch('/alterarConta/:idCliente')
-  updateTipoConta(
-    @Param('idCliente') idCliente: number,
-    @Body('tipoConta') tipoConta: TipoConta,
-  ) {
-    return this.ClientesService.updateTipo(idCliente, tipoConta);
-  }
-
-  @Delete('/fecharConta/:idCliente')
-  closeConta(@Param('idCliente') idCliente: number): void {
-    return this.ClientesService.closeConta(idCliente);
+  @Delete('/deletar/:idCliente')
+  deletarCliente(@Param('idCliente') idCliente: number): void {
+    return this.ClientesService.deletarCliente(idCliente);
   }
 }

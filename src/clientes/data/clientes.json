@@ -25,11 +25,19 @@
     "endereco": "praça central, 789, bairro união, cidade"
   },
   {
-    "idCliente": 4,
-    "nome": "Momo",
-    "cpf": "33344556677",
-    "email": "momo@example.com",
-    "telefone": "7777-7777",
-    "endereco": "rua das palmeiras, 456, bairro primavera, cidade"
+    "nome": "João Silva",
+    "cpf": "123.456.789-00",
+    "email": "joao.silva@example.com",
+    "telefone": "123456789",
+    "endereco": "Rua Exemplo, 123",
+    "idCliente": 4
+  },
+  {
+    "nome": "Ana Souza",
+    "cpf": "555.666.777-88",
+    "email": "ana.souza@example.com",
+    "telefone": "5566778899",
+    "idCliente": 5,
+    "endereco": "Rua dos Lírios, 321"
   }
 ]
