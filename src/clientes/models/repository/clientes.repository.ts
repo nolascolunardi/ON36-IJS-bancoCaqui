@@ -13,7 +13,7 @@ export class ClienteRepository {
   }
 
   adicionarCliente(cliente: Cliente): void {
-    cliente.setIdCliente(this.idCounter++);
+    cliente.setId(this.idCounter++);
     this.Clientes.push(cliente);
   }
 

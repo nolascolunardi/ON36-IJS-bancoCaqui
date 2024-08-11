@@ -10,11 +10,11 @@ export class Cliente extends Usuario {
     this.idCliente = idCliente;
   }
 
-  getIdCliente(): number {
+  getId(): number {
     return this.idCliente;
   }
 
-  setIdCliente(idCliente: number): void {
+  setId(idCliente: number): void {
     this.idCliente = idCliente;
   }
 }

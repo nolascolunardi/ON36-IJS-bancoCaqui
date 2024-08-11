@@ -28,7 +28,12 @@ export class ClientesController {
   }
 
   @Delete('/deletar/:idCliente')
-  deletarCliente(@Param('idCliente') idCliente: number): void {
-    return this.ClientesService.deletarCliente(idCliente);
+  deletarCliente(@Param('idCliente') idCliente: number): string {
+    try {
+      this.ClientesService.deletarCliente(idCliente);
+    } catch (error) {
+      return error;
+    }
+    return 'Cliente deletado com sucesso.';
   }
 }

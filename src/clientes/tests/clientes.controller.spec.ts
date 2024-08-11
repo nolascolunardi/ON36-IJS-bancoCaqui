@@ -26,3 +26,22 @@ describe('POST http://localhost:3000/clientes/cadastrar', () => {
     expect(result).toStrictEqual(novoCliente);
   });
 });
+
+describe('POST http://localhost:3000/clientes/listar', () => {
+  test('Caso em que a lista retorna os clientes cadastrados', async () => {
+    const result = clienteController.listarClientes();
+    expect(result).toHaveLength(2);
+  });
+});
+
+describe('DELETE http://localhost:3000/clientes/deletar/:cpf', () => {
+  test('Caso em que deleta cliente existente na lista', async () => {
+    const result = clienteController.deletarCliente(1);
+    expect(result).toBe('Cliente deletado com sucesso.');
+  });
+  test('Caso em que tenta deletar cliente inexistente na lista', async () => {
+    const result = clienteController.deletarCliente(9);
+    const error = new Error('Cliente com id 9 não encontrado.');
+    expect(result).toStrictEqual(error);
+  });
+});
