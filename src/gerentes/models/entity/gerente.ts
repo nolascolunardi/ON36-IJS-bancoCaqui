@@ -1,11 +1,12 @@
-import { Usuario } from 'src/usuarios/usuarios.model';
+import { Usuario } from '../../../usuarios/usuarios.model';
 
 export class Gerente extends Usuario {
   public idGerente: number;
   public registro: string;
 
-  constructor(registro: string, nome: string, cpf: string, email: string, telefone: string) {
+  constructor(registro: string, nome: string, cpf: string, email: string, telefone: string, idGerente?: number) {
     super(nome, cpf, email, telefone);
+    this.idGerente = idGerente;
     this.registro = registro;
   }
 
