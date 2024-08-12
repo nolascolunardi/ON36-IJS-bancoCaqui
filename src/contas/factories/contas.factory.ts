@@ -9,9 +9,9 @@ export class ContasFactory {
   public createConta(tipoConta: TipoConta, registroGerente: string, idCliente: number, numeroConta: string, saldo: number): Conta {
     switch (tipoConta) {
       case TipoConta.CORRENTE:
-        return new ContaCorrente(registroGerente, idCliente, numeroConta, saldo, 100);
+        return new ContaCorrente(registroGerente, idCliente, numeroConta, saldo);
       case TipoConta.POUPANCA:
-        return new ContaPoupanca(registroGerente, idCliente, numeroConta, saldo, 0.05);
+        return new ContaPoupanca(registroGerente, idCliente, numeroConta, saldo);
       default:
         throw new Error('Tipo de conta inválido');
     }

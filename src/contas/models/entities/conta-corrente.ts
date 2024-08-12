@@ -2,11 +2,11 @@ import { Conta } from './contas';
 import { TipoConta } from '../../enums/tipos-conta.enum';
 
 export class ContaCorrente extends Conta {
-  private limiteCheque: number = 100;
+  private limiteCheque: number;
 
-  constructor(registroGerente: string, idCliente: number, numeroConta: string, saldo: number, limiteCheque: number) {
-    super(registroGerente, idCliente, numeroConta, TipoConta.CORRENTE, saldo);
-    this.limiteCheque = limiteCheque;
+  constructor(registroGerente: string, idCliente: number, numeroConta: string, saldo: number, idConta?: number) {
+    super(registroGerente, idCliente, numeroConta, TipoConta.CORRENTE, saldo, idConta);
+    this.limiteCheque = 100;
   }
 
   public getLimiteCheque(): number {

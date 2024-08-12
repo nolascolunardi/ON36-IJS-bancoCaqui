@@ -4,12 +4,13 @@ export class Conta {
   protected registroCliente: string;
   protected idCliente: number;
   public idConta: number;
-  protected numeroConta: string;
-  protected tipoConta: TipoConta;
+  public numeroConta: string;
+  public tipoConta: TipoConta;
   protected status: boolean = true;
   protected saldo: number;
 
-  constructor(registroCliente: string, idCliente: number, numeroConta: string, tipoConta: TipoConta, saldo: number) {
+  constructor(registroCliente: string, idCliente: number, numeroConta: string, tipoConta: TipoConta, saldo: number, idConta?: number) {
+    this.idConta = idConta;
     this.registroCliente = registroCliente;
     this.idCliente = idCliente;
     this.numeroConta = numeroConta;
@@ -19,5 +20,25 @@ export class Conta {
 
   public setIdConta(idConta: number): void {
     this.idConta = idConta;
+  }
+
+  public setStatus(status: boolean): void {
+    this.status = status;
+  }
+
+  public getStatus(): boolean {
+    return this.status;
+  }
+
+  public setSaldo(saldo: number): void {
+    this.saldo = saldo;
+  }
+
+  public getSaldo(): number {
+    return this.saldo;
+  }
+
+  public setTipoConta(tipoConta: TipoConta): void {
+    this.tipoConta = tipoConta;
   }
 }

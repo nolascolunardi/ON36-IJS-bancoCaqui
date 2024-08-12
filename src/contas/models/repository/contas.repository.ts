@@ -1,27 +1,47 @@
+import { Injectable } from '@nestjs/common';
 import { Conta } from '../entities/contas';
-import * as fs from 'fs';
-import * as path from 'path';
+import { ContasDatabase } from '../../data/contas.database';
+import { TipoConta } from '../../enums/tipos-conta.enum';
 
+@Injectable()
 export class ContasRepository {
-  private readonly filePathContas = path.resolve('src/contas/data/contas.json');
   private idCounter: number;
+  private Contas: Conta[];
 
-  constructor() {
-    const contas = this.readContas();
-    this.idCounter = contas.length > 0 ? contas[contas.length - 1].idConta + 1 : 1;
-  }
-  private readContas(): Conta[] {
-    const data = fs.readFileSync(this.filePathContas, 'utf-8');
-    return JSON.parse(data) as Conta[];
-  }
-  private writeContas(contas: Conta[]): void {
-    fs.writeFileSync(this.filePathContas, JSON.stringify(contas, null, 2), 'utf-8');
+  constructor(private databaseContas: ContasDatabase) {
+    this.Contas = this.databaseContas.database;
+    this.idCounter = this.Contas.length > 0 ? this.Contas[this.Contas.length - 1].idConta + 1 : 1;
   }
 
-  addConta(conta: Conta): void {
-    conta.setIdConta(this.idCounter);
-    const listaContas = this.readContas();
-    listaContas.push(conta);
-    this.writeContas(listaContas);
+  adicionarConta(conta: Conta): void {
+    conta.setIdConta(this.idCounter++);
+    this.Contas.push(conta);
+  }
+
+  deletarConta(conta: Conta): void {
+    conta.setStatus(false);
+  }
+
+  atualizarTipoDeConta(conta: Conta, tipoConta: TipoConta): Conta {
+    conta.tipoConta = tipoConta;
+    return conta;
+  }
+
+  findContabyNumeroConta(numConta: string): Conta {
+    return this.Contas.find((conta) => conta.numeroConta === numConta);
+  }
+
+  getAllContas(tipoConta: TipoConta): Conta[] {
+    return this.Contas.filter((conta) => conta.tipoConta === tipoConta);
+  }
+
+  depositar(conta: Conta, valor: number): Conta {
+    conta.setSaldo(conta.getSaldo() + valor);
+    return conta;
+  }
+
+  sacar(conta: Conta, valor: number): Conta {
+    conta.setSaldo(conta.getSaldo() - valor);
+    return conta;
   }
 }
