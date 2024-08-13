@@ -1,42 +1,31 @@
+import { Injectable } from '@nestjs/common';
 import { Cliente } from '../entity/cliente';
-import * as fs from 'fs';
-import * as path from 'path';
+import { ClienteDatabase } from '../../data/clientes.database';
 
+@Injectable()
 export class ClienteRepository {
-  private readonly filePathCliente = path.resolve('src/clientes/data/clientes.json');
   private idCounter: number;
+  private Clientes: Cliente[];
 
-  constructor() {
-    const clientes = this.readClientes();
-    this.idCounter = clientes.length > 0 ? clientes[clientes.length - 1].idCliente + 1 : 1;
+  constructor(private databaseClientes: ClienteDatabase) {
+    this.Clientes = this.databaseClientes.database;
+    this.idCounter = this.Clientes.length > 0 ? this.Clientes[this.Clientes.length - 1].idCliente + 1 : 1;
   }
 
-  private readClientes(): Cliente[] {
-    const data = fs.readFileSync(this.filePathCliente, 'utf-8');
-    return JSON.parse(data) as Cliente[];
-  }
-  private writeClientes(clientes: Cliente[]): void {
-    fs.writeFileSync(this.filePathCliente, JSON.stringify(clientes, null, 2), 'utf-8');
+  adicionarCliente(cliente: Cliente): void {
+    cliente.setId(this.idCounter++);
+    this.Clientes.push(cliente);
   }
 
-  addCliente(cliente: Cliente): void {
-    cliente.setIdCliente(this.idCounter);
-    const listaClientes = this.readClientes();
-    listaClientes.push(cliente);
-    this.writeClientes(listaClientes);
+  deletarCliente(index: number): void {
+    this.Clientes.splice(index, 1);
   }
 
-  deletarCliente(idCliente: number): void {
-    const listaClientes = this.readClientes();
-    const index = this.findIndexById(idCliente, listaClientes);
-    if (index === -1) {
-      throw new Error(`Cliente com id ${idCliente} não encontrado.`);
-    }
-    listaClientes.splice(index, 1);
-    this.writeClientes(listaClientes);
+  findIndexById(id: number): number {
+    return this.Clientes.findIndex((cliente) => cliente.idCliente === id);
   }
 
-  findIndexById(id: number, listaClientes: Cliente[]): number {
-    return listaClientes.findIndex((cliente) => cliente.idCliente === id);
+  getAllClientes(): Cliente[] {
+    return this.Clientes;
   }
 }
