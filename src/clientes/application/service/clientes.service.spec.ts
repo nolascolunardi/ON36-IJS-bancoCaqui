@@ -1,6 +1,6 @@
-import { ClienteService } from '../clientes.service';
-import { Cliente } from '../models/entity/cliente';
-import { ClienteRepository } from '../models/repository/clientes.repository';
+import { ClienteService } from './clientes.service';
+import { Cliente } from '../../domain/cliente';
+import { ClienteRepository } from '../../infrastructure/persistence/in-memory.repository';
 
 let clienteService: ClienteService;
 let clienteRepository: ClienteRepository;

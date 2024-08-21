@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { ClienteService } from './clientes.service';
-import { Cliente } from './models/entity/cliente';
+import { ClienteService } from '../../application/service/clientes.service';
+import { Cliente } from '../../domain/cliente';
 
 @Controller('clientes')
 export class ClientesController {
@@ -13,10 +13,10 @@ export class ClientesController {
     @Body('cpf') cpf: string,
     @Body('email') email: string,
     @Body('telefone') telefone: string,
-    @Body('endereco') endereco: string,
-  ): Cliente {
+    @Body('cep') cep: string,
+  ): Promise<Cliente> {
     try {
-      return this.ClientesService.cadastrarCliente(nome, cpf, email, telefone, endereco);
+      return this.ClientesService.cadastrarCliente(nome, cpf, email, telefone, cep);
     } catch (error) {
       return error;
     }
