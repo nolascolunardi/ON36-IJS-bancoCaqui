@@ -1,40 +1,40 @@
-import { GerentesService } from '../gerentes.service';
-import { GerentesRepository } from '../models/repository/gerentes.repository';
-import { Gerente } from '../models/entity/gerente';
+import { GerentesService } from './gerentes.service';
+import { InMemoryRepository } from '../../infrastructure/persistence/in-memory.repository';
+import { Gerente } from '../../domain/gerente';
 
 let gerenteService: GerentesService;
-let gerenteRepository: GerentesRepository;
+let gerenteRepository: InMemoryRepository;
 
 beforeEach(() => {
   const databaseMock = {
     database: [
-      new Gerente('155', 'João', '12345678900', 'joao@bancocaqui.com', '123456789', 1),
-      new Gerente('123', 'Ana', '14714725836', 'ana@bancocaqui.com', '11968457784', 2),
+      new Gerente('155', 'João', '12345678900', 'joao@bancocaqui.com', '123456789', '08710000', 1),
+      new Gerente('123', 'Ana', '14714725836', 'ana@bancocaqui.com', '11968457784', '08710000', 2),
     ],
   };
-  gerenteRepository = new GerentesRepository(databaseMock);
+  gerenteRepository = new InMemoryRepository(databaseMock);
   gerenteService = new GerentesService(gerenteRepository);
 });
 
 describe('Teste de cadastrar Gerente', () => {
   test('Caso em que cadastra um gerente com registro, email e cpf valido', async () => {
-    const result = gerenteService.cadastrarGerente('144', 'Joana', '147258147', 'joana@bancocaqui.com', '11968457784');
-    const novoGerente = new Gerente('144', 'Joana', '147258147', 'joana@bancocaqui.com', '11968457784', 3);
+    const result = gerenteService.cadastrarGerente('144', 'Joana', '147258147', 'joana@bancocaqui.com', '11968457784', '08710000');
+    const novoGerente = new Gerente('144', 'Joana', '147258147', 'joana@bancocaqui.com', '11968457784', '08710000', 3);
     expect(result).toStrictEqual(novoGerente);
   });
 
   test('Caso em que tenta cadastrar um gerente com registro já cadastrado', async () => {
-    const result = () => gerenteService.cadastrarGerente('123', 'Joana', '12345678140', 'joana@bancocaqui.com', '11968457784');
+    const result = () => gerenteService.cadastrarGerente('123', 'Joana', '12345678140', 'joana@bancocaqui.com', '11968457784', '08710000');
     expect(result).toThrow('Registro inválido.');
   });
 
   test('Caso em que tenta cadastrar um gerente com cpf já cadastrado', async () => {
-    const result = () => gerenteService.cadastrarGerente('99', 'Joana', '12345678900', 'joana@bancocaqui.com', '11968457784');
+    const result = () => gerenteService.cadastrarGerente('99', 'Joana', '12345678900', 'joana@bancocaqui.com', '11968457784', '08710000');
     expect(result).toThrow('CPF já cadastrado.');
   });
 
   test('Caso em que tenta cadastrar um gerente com email já cadastrado', async () => {
-    const result = () => gerenteService.cadastrarGerente('99', 'Joana', '12345655991', 'ana@bancocaqui.com', '11968457784');
+    const result = () => gerenteService.cadastrarGerente('99', 'Joana', '12345655991', 'ana@bancocaqui.com', '11968457784', '08710000');
     expect(result).toThrow('Email já cadastrado.');
   });
 });
