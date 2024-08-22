@@ -1,4 +1,4 @@
-import { TipoConta } from '../../enums/tipos-conta.enum';
+import { TipoConta } from './enums/tipos-conta.enum';
 
 export class Conta {
   protected registroCliente: string;
@@ -30,15 +30,21 @@ export class Conta {
     return this.status;
   }
 
-  public setSaldo(saldo: number): void {
-    this.saldo = saldo;
-  }
-
   public getSaldo(): number {
     return this.saldo;
   }
 
   public setTipoConta(tipoConta: TipoConta): void {
     this.tipoConta = tipoConta;
+  }
+  sacar(valor: number): void {
+    if (valor > this.saldo) {
+      throw new Error('Saldo insuficiente');
+    }
+    this.saldo -= valor;
+  }
+
+  depositar(valor: number): void {
+    this.saldo += valor;
   }
 }

@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ClientesModule } from './clientes/application/clientes.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { GerentesModule } from './gerentes/application/gerentes.module';
-import { ContasModule } from './contas/contas.module';
+import { ContasModule } from './contas/application/contas.module';
 
 @Module({
   imports: [ClientesModule, UsuariosModule, GerentesModule, ContasModule],

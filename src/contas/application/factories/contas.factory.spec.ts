@@ -1,7 +1,7 @@
-import { ContasFactory } from '../factories/contas.factory';
-import { ContaCorrente } from '../models/entities/conta-corrente';
-import { TipoConta } from '../enums/tipos-conta.enum';
-import { ContaPoupanca } from '../models/entities/conta-poupanca';
+import { ContasFactory } from './contas.factory';
+import { ContaCorrente } from '../../domain/conta-corrente';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
+import { ContaPoupanca } from '../../domain/conta-poupanca';
 
 describe('Teste da funçao createConta de ContasFactory', () => {
   const contasFactory = new ContasFactory();

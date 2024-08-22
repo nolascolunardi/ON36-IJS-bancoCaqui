@@ -1,5 +1,5 @@
 import { Conta } from './contas';
-import { TipoConta } from '../../enums/tipos-conta.enum';
+import { TipoConta } from './enums/tipos-conta.enum';
 
 export class ContaPoupanca extends Conta {
   private readonly taxaRendimento: number;

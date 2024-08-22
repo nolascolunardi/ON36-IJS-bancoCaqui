@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ContasFactory } from './factories/contas.factory';
-import { ContasRepository } from './models/repository/contas.repository';
-import { TipoConta } from './enums/tipos-conta.enum';
-import { Conta } from './models/entities/contas';
+import { ContasFactory } from '../factories/contas.factory';
+import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
+import { Conta } from '../../domain/contas';
 
 @Injectable()
 export class ContasService {
   constructor(
     private readonly contaFactory: ContasFactory,
-    private readonly contaRepository: ContasRepository,
+    private readonly contaRepository: InMemoryContasRepository,
   ) {}
 
   abrirConta(tipoConta: TipoConta, registroGerente: string, idCliente: number, numeroConta: string, saldo: number): Conta {
@@ -20,37 +20,42 @@ export class ContasService {
     }
 
     const newConta = this.contaFactory.createConta(tipoConta, registroGerente, Number(idCliente), numeroConta, Number(saldo));
-    this.contaRepository.adicionarConta(newConta);
+    this.contaRepository.salvar(newConta);
     return newConta;
   }
 
   validarConta(numeroConta: string): boolean {
-    return !this.contaRepository.findContabyNumeroConta(numeroConta);
+    return !this.findContabyNumeroConta(numeroConta);
+  }
+
+  findContabyNumeroConta(numeroConta: string): Conta {
+    const contas = this.contaRepository.listarTodas();
+    return contas.find((conta) => conta.numeroConta === numeroConta);
   }
 
   fecharConta(numConta: string): string {
-    const conta = this.contaRepository.findContabyNumeroConta(numConta);
+    const contas = this.contaRepository.listarTodas();
+    const conta = contas.find((conta) => conta.numeroConta === numConta);
 
     if (!conta) {
       throw new Error('Conta não encontrada.');
     }
 
-    this.contaRepository.deletarConta(conta);
+    this.contaRepository.deletar(conta);
     return 'Conta deletada com sucesso.';
   }
 
   atualizarTipoDeConta(numConta: string, tipoConta: TipoConta): Conta {
-    const conta = this.contaRepository.findContabyNumeroConta(numConta);
+    const conta = this.findContabyNumeroConta(numConta);
 
     if (!conta) {
       throw new Error('Conta não encontrada.');
     }
-
-    return this.contaRepository.atualizarTipoDeConta(conta, tipoConta);
+    return this.contaRepository.atualizarTipo(conta, tipoConta);
   }
 
-  listarContas(tipoConta: TipoConta): Conta[] {
-    return this.contaRepository.getAllContas(tipoConta);
+  listarContas(): Conta[] {
+    return this.contaRepository.listarTodas();
   }
 
   depositar(numConta: string, valor: number): Conta {
@@ -58,12 +63,12 @@ export class ContasService {
       throw new Error('Valor inválido.');
     }
 
-    const conta = this.contaRepository.findContabyNumeroConta(numConta);
+    const conta = this.findContabyNumeroConta(numConta);
     if (!conta) {
       throw new Error('Conta não encontrada.');
     }
-
-    return this.contaRepository.depositar(conta, valor);
+    conta.depositar(valor);
+    return this.contaRepository.atualizarSaldo(conta);
   }
 
   sacar(numConta: string, valor: number): Conta {
@@ -71,16 +76,12 @@ export class ContasService {
       throw new Error('Valor inválido.');
     }
 
-    const conta = this.contaRepository.findContabyNumeroConta(numConta);
+    const conta = this.findContabyNumeroConta(numConta);
 
     if (!conta) {
       throw new Error('Conta não encontrada.');
     }
-
-    if (conta.getSaldo() < valor) {
-      throw new Error('Saldo insuficiente.');
-    }
-
-    return this.contaRepository.sacar(conta, valor);
+    conta.sacar(valor);
+    return this.contaRepository.atualizarSaldo(conta);
   }
 }

@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { ContasService } from './contas.service';
-import { TipoConta } from './enums/tipos-conta.enum';
+import { ContasService } from '../../application/service/contas.service';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 
 @Controller('contas')
 export class ContasController {
@@ -41,8 +41,8 @@ export class ContasController {
   }
 
   @Get('/listarContas/:tipoConta')
-  listarContas(@Param('tipoConta') tipoConta: TipoConta) {
-    return this.contaService.listarContas(tipoConta);
+  listarContas() {
+    return this.contaService.listarContas();
   }
 
   @Post('/depositar/:numeroConta/:valor')

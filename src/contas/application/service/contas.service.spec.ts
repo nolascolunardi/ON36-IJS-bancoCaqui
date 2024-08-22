@@ -1,19 +1,19 @@
-import { ContasService } from '../contas.service';
-import { ContaCorrente } from '../models/entities/conta-corrente';
-import { ContaPoupanca } from '../models/entities/conta-poupanca';
-import { ContasRepository } from '../models/repository/contas.repository';
+import { ContasService } from './contas.service';
+import { ContaCorrente } from '../../domain/conta-corrente';
+import { ContaPoupanca } from '../../domain/conta-poupanca';
+import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
 import { ContasFactory } from '../factories/contas.factory';
-import { TipoConta } from '../enums/tipos-conta.enum';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 
 let contasService: ContasService;
 let contasFactory: ContasFactory;
-let contasRepository: ContasRepository;
+let contasRepository: InMemoryContasRepository;
 
 beforeEach(() => {
   const databaseMock = {
     database: [new ContaCorrente('155', 1, '1554784', 122, 1), new ContaPoupanca('123', 2, '1245632', 200, 2)],
   };
-  contasRepository = new ContasRepository(databaseMock);
+  contasRepository = new InMemoryContasRepository(databaseMock);
   contasFactory = new ContasFactory();
   contasService = new ContasService(contasFactory, contasRepository);
 });
@@ -78,14 +78,9 @@ describe('Teste de atualizar Tipo de Conta', () => {
 });
 
 describe('Teste de listar Contas', () => {
-  test('Caso em que lista todas as contas corrente', async () => {
-    const result = contasService.listarContas(TipoConta.CORRENTE);
-    expect(result.length).toBe(1);
-  });
-
-  test('Caso em que lista todas as contas poupança', async () => {
-    const result = contasService.listarContas(TipoConta.POUPANCA);
-    expect(result.length).toBe(1);
+  test('Caso em que lista todas as contas', async () => {
+    const result = contasService.listarContas();
+    expect(result.length).toBe(2);
   });
 });
 

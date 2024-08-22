@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Conta } from '../models/entities/contas';
-import { ContaCorrente } from '../models/entities/conta-corrente';
-import { ContaPoupanca } from '../models/entities/conta-poupanca';
-import { TipoConta } from '../enums/tipos-conta.enum';
+import { Conta } from '../../domain/contas';
+import { ContaCorrente } from '../../domain/conta-corrente';
+import { ContaPoupanca } from '../../domain/conta-poupanca';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 
 @Injectable()
 export class ContasFactory {

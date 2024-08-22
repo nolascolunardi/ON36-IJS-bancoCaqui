@@ -1,22 +1,22 @@
-import { ContasController } from '../contas.controller';
-import { ContasService } from '../contas.service';
-import { ContasRepository } from '../models/repository/contas.repository';
-import { ContasFactory } from '../factories/contas.factory';
-import { ContaCorrente } from '../models/entities/conta-corrente';
-import { ContaPoupanca } from '../models/entities/conta-poupanca';
-import { TipoConta } from '../enums/tipos-conta.enum';
+import { ContasController } from './contas.controller';
+import { ContasService } from '../../application/service/contas.service';
+import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
+import { ContasFactory } from '../../application/factories/contas.factory';
+import { ContaCorrente } from '../../domain/conta-corrente';
+import { ContaPoupanca } from '../../domain/conta-poupanca';
+import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 
 let contaController: ContasController;
 let contaService: ContasService;
 let contaFactory: ContasFactory;
-let contaRepository: ContasRepository;
+let contaRepository: InMemoryContasRepository;
 
 beforeEach(() => {
   const databaseMock = {
     database: [new ContaCorrente('155', 1, '1554784', 122, 1), new ContaPoupanca('123', 2, '1245632', 200, 2)],
   };
   contaFactory = new ContasFactory();
-  contaRepository = new ContasRepository(databaseMock);
+  contaRepository = new InMemoryContasRepository(databaseMock);
   contaService = new ContasService(contaFactory, contaRepository);
   contaController = new ContasController(contaService);
 });
