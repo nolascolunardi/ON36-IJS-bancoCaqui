@@ -1,24 +1,15 @@
-import { Usuario } from '../../usuarios/usuarios.model';
+import { Usuario } from '../../usuarios/usuarios';
+import { Cliente } from '../../clientes/domain/cliente';
+import { randomUUID } from 'crypto';
 
 export class Gerente extends Usuario {
-  public idGerente: number;
-  public registro: string;
+  idGerente: string;
+  registro: string;
+  cliente: Cliente[];
 
-  constructor(registro: string, nome: string, cpf: string, email: string, telefone: string, cep: string, idGerente?: number) {
-    super(nome, cpf, email, telefone, cep);
-    this.idGerente = idGerente;
+  constructor(registro: string, nome: string, cpf: string, email: string, telefone: string) {
+    super(nome, cpf, email, telefone);
+    this.idGerente = randomUUID();
     this.registro = registro;
-  }
-
-  getId(): number {
-    return this.idGerente;
-  }
-
-  setId(idGerente: number): void {
-    this.idGerente = idGerente;
-  }
-
-  getRegistro(): string {
-    return this.registro;
   }
 }

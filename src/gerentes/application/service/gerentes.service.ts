@@ -1,63 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Gerente } from '../../domain/gerente';
-import { InMemoryRepository } from '../../infrastructure/persistence/in-memory.repository';
-import { ViaCep } from '../../presenter/http/via-cep';
+import { GerentesRepository } from '../ports/gerentes.repository';
+import { CriarGerenteDto } from '../../presenter/http/dto/criar-gerente.dto';
+import { GerenteFactory } from '../../domain/factory/gerente.factory';
 
 @Injectable()
 export class GerentesService {
   constructor(
-    private readonly gerenteRepository: InMemoryRepository,
-    private readonly cepValidador: ViaCep,
+    private readonly gerenteRepository: GerentesRepository,
+    private readonly gerenteFactory: GerenteFactory,
   ) {}
 
-  cadastrarGerente(registro: string, nome: string, cpf: string, email: string, telefone: string, cep: string): Gerente {
-    if (!this.cepValidador.validarCep(cep)) {
-      throw new Error('CEP inválido.');
-    }
+  async cadastrarGerente(criarGerenteDto: CriarGerenteDto): Promise<Gerente> {
+    this.validarRegistro(criarGerenteDto.registro);
+    this.validarCPF(criarGerenteDto.cpf);
+    this.validarEmail(criarGerenteDto.email);
 
-    if (!this.validarRegistro(registro)) {
-      throw new Error('Registro inválido.');
-    }
+    const novoGerente = this.gerenteFactory.criarGerente(criarGerenteDto);
 
-    if (!this.validarCPF(cpf)) {
-      throw new Error('CPF já cadastrado.');
-    }
-
-    if (!this.validarEmail(email)) {
-      throw new Error('Email já cadastrado.');
-    }
-
-    const novoGerente = new Gerente(registro, nome, cpf, email, telefone, cep);
-    this.gerenteRepository.salvar(novoGerente);
-    return novoGerente;
+    return this.gerenteRepository.salvar(novoGerente);
   }
 
-  validarCPF(cpf: string): boolean {
+  validarCPF(cpf: string): void {
     const gerentes = this.gerenteRepository.listarTodos();
-    return !gerentes.find((gerente) => gerente.cpf === cpf);
+    const gerenteEncontrado = gerentes.find((gerente) => gerente.cpf === cpf);
+    if (gerenteEncontrado) {
+      throw new ForbiddenException(`CPF inválido.`);
+    }
   }
 
-  validarEmail(email: string): boolean {
+  validarEmail(email: string): void {
     const gerentes = this.gerenteRepository.listarTodos();
-    return !gerentes.find((gerente) => gerente.email === email);
+    const gerenteEncontrado = gerentes.find((gerente) => gerente.email === email);
+    if (gerenteEncontrado) {
+      throw new ConflictException(`Email inválido.`);
+    }
   }
 
-  validarRegistro(registro: string): boolean {
+  validarRegistro(registro: string): void {
     const gerentes = this.gerenteRepository.listarTodos();
-    return !gerentes.find((gerente) => gerente.registro === registro);
+    const gerenteEncontrado = gerentes.find((gerente) => gerente.registro === registro);
+    if (gerenteEncontrado) {
+      throw new ConflictException(`Registro inválido.`);
+    }
   }
 
-  listarGerentes(): Gerente[] {
+  async listarGerentes(): Promise<Gerente[]> {
     return this.gerenteRepository.listarTodos();
   }
 
-  deletarGerente(registro: string): Gerente[] {
-    const alunos = this.gerenteRepository.listarTodos();
-    const index = alunos.findIndex((gerente) => gerente.registro === registro);
-    if (index === -1) {
-      throw new Error(`Gerente com registro ${registro} não encontrado.`);
-    }
+  async deletarGerente(registro: string): Promise<string> {
+    const index = this.buscarGerentePorRegistro(registro);
     this.gerenteRepository.deletar(index);
-    return;
+    return 'Excluido com sucesso';
+  }
+
+  buscarGerentePorRegistro(registro: string): number {
+    const gerentes = this.gerenteRepository.listarTodos();
+    const index = gerentes.findIndex((gerente) => gerente.registro === registro);
+    if (index === -1) {
+      throw new NotFoundException('gerente', 'Gerente com registro não encontrado.');
+    }
+    return index;
   }
 }
