@@ -2,7 +2,7 @@ import { ContasService } from './contas.service';
 import { ContaCorrente } from '../../domain/conta-corrente';
 import { ContaPoupanca } from '../../domain/conta-poupanca';
 import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
-import { ContasFactory } from '../factories/contas.factory';
+import { ContasFactory } from '../../domain/factories/contas.factory';
 import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 
 let contasService: ContasService;

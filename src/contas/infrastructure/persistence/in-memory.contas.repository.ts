@@ -12,7 +12,7 @@ export class InMemoryContasRepository extends ContasRepository {
   constructor(private databaseContas: ContasDatabase) {
     super();
     this.Contas = this.databaseContas.database;
-    this.idCounter = this.Contas.length > 0 ? this.Contas[this.Contas.length - 1].idConta + 1 : 1;
+    this.idCounter = this.Contas.length > 0 ? this.Contas[this.Contas.length - 1].id + 1 : 1;
   }
 
   salvar(conta: Conta): Conta {
@@ -26,7 +26,7 @@ export class InMemoryContasRepository extends ContasRepository {
   }
 
   atualizarSaldo(conta: Conta): Conta {
-    const index = this.Contas.findIndex((c) => c.idConta === conta.idConta);
+    const index = this.Contas.findIndex((c) => c.id === conta.id);
     this.Contas[index] = conta;
     return conta;
   }

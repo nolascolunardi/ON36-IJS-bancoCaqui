@@ -1,50 +1,33 @@
 import { TipoConta } from './enums/tipos-conta.enum';
+import { randomUUID } from 'crypto';
 
 export class Conta {
-  protected registroCliente: string;
-  protected idCliente: number;
-  public idConta: number;
-  public numeroConta: string;
-  public tipoConta: TipoConta;
-  protected status: boolean = true;
-  protected saldo: number;
+  registroGerente: string;
+  idCliente: number;
+  id: string;
+  numeroConta: string;
+  tipoConta: TipoConta;
+  status: boolean;
+  saldo: number;
 
-  constructor(registroCliente: string, idCliente: number, numeroConta: string, tipoConta: TipoConta, saldo: number, idConta?: number) {
-    this.idConta = idConta;
-    this.registroCliente = registroCliente;
+  constructor(registroGerente: string, idCliente: number, numeroConta: string, tipoConta: TipoConta) {
+    this.registroGerente = registroGerente;
     this.idCliente = idCliente;
+    this.id = randomUUID();
     this.numeroConta = numeroConta;
     this.tipoConta = tipoConta;
-    this.saldo = saldo;
+    this.status = true;
+    this.saldo = 0;
   }
 
-  public setIdConta(idConta: number): void {
-    this.idConta = idConta;
+  public depositar(valor: number): void {
+    this.saldo += valor;
   }
 
-  public setStatus(status: boolean): void {
-    this.status = status;
-  }
-
-  public getStatus(): boolean {
-    return this.status;
-  }
-
-  public getSaldo(): number {
-    return this.saldo;
-  }
-
-  public setTipoConta(tipoConta: TipoConta): void {
-    this.tipoConta = tipoConta;
-  }
-  sacar(valor: number): void {
-    if (valor > this.saldo) {
-      throw new Error('Saldo insuficiente');
+  public sacar(valor: number): void {
+    if (this.saldo < valor) {
+      throw new Error('Saldo insuficiente.');
     }
     this.saldo -= valor;
-  }
-
-  depositar(valor: number): void {
-    this.saldo += valor;
   }
 }

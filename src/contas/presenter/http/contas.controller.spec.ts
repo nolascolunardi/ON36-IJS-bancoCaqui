@@ -1,7 +1,7 @@
 import { ContasController } from './contas.controller';
 import { ContasService } from '../../application/service/contas.service';
 import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
-import { ContasFactory } from '../../application/factories/contas.factory';
+import { ContasFactory } from '../../domain/factories/contas.factory';
 import { ContaCorrente } from '../../domain/conta-corrente';
 import { ContaPoupanca } from '../../domain/conta-poupanca';
 import { TipoConta } from '../../domain/enums/tipos-conta.enum';

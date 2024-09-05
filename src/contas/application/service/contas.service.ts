@@ -1,31 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { ContasFactory } from '../factories/contas.factory';
-import { InMemoryContasRepository } from '../../infrastructure/persistence/in-memory.contas.repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ContasFactory } from '../../domain/factories/contas.factory';
 import { TipoConta } from '../../domain/enums/tipos-conta.enum';
 import { Conta } from '../../domain/contas';
+import { ContasRepository } from '../ports/contas.repository';
+import { AbrirContaDto } from '../../presenter/http/dto/abrir-conta.dto';
+import { DepositarDto } from '../../presenter/http/dto/depositar.dto';
+import { SacarDto } from '../../presenter/http/dto/sacar.dto';
 
 @Injectable()
 export class ContasService {
   constructor(
     private readonly contaFactory: ContasFactory,
-    private readonly contaRepository: InMemoryContasRepository,
+    private readonly contaRepository: ContasRepository,
   ) {}
 
-  abrirConta(tipoConta: TipoConta, registroGerente: string, idCliente: number, numeroConta: string, saldo: number): Conta {
-    if (!this.validarConta(numeroConta)) {
+  async abrir(abrirContaDto: AbrirContaDto): Promise<Conta> {
+    if (this.findContabyNumeroConta(abrirContaDto.numeroConta)) {
       throw new Error('Conta já existente.');
     }
-    if (saldo <= 0) {
-      throw new Error('Saldo inválido.');
-    }
 
-    const newConta = this.contaFactory.createConta(tipoConta, registroGerente, Number(idCliente), numeroConta, Number(saldo));
+    const newConta = this.contaFactory.criar(abrirContaDto);
     this.contaRepository.salvar(newConta);
     return newConta;
-  }
-
-  validarConta(numeroConta: string): boolean {
-    return !this.findContabyNumeroConta(numeroConta);
   }
 
   findContabyNumeroConta(numeroConta: string): Conta {
@@ -33,55 +29,38 @@ export class ContasService {
     return contas.find((conta) => conta.numeroConta === numeroConta);
   }
 
-  fecharConta(numConta: string): string {
-    const contas = this.contaRepository.listarTodas();
-    const conta = contas.find((conta) => conta.numeroConta === numConta);
-
+  validarConta(numeroConta: string): Conta {
+    const conta = this.findContabyNumeroConta(numeroConta);
     if (!conta) {
-      throw new Error('Conta não encontrada.');
+      throw new NotFoundException('Conta não encontrada.');
     }
+    return conta;
+  }
 
+  async fechar(numConta: string): Promise<string> {
+    const conta = this.validarConta(numConta);
     this.contaRepository.deletar(conta);
     return 'Conta deletada com sucesso.';
   }
 
-  atualizarTipoDeConta(numConta: string, tipoConta: TipoConta): Conta {
-    const conta = this.findContabyNumeroConta(numConta);
-
-    if (!conta) {
-      throw new Error('Conta não encontrada.');
-    }
+  async atualizarTipoConta(numConta: string, tipoConta: TipoConta): Promise<Conta> {
+    const conta = this.validarConta(numConta);
     return this.contaRepository.atualizarTipo(conta, tipoConta);
   }
 
-  listarContas(): Conta[] {
+  listarTodas(): Conta[] {
     return this.contaRepository.listarTodas();
   }
 
-  depositar(numConta: string, valor: number): Conta {
-    if (valor <= 0) {
-      throw new Error('Valor inválido.');
-    }
-
-    const conta = this.findContabyNumeroConta(numConta);
-    if (!conta) {
-      throw new Error('Conta não encontrada.');
-    }
-    conta.depositar(valor);
+  async depositar(numConta: string, depositarDto: DepositarDto): Promise<Conta> {
+    const conta = this.validarConta(numConta);
+    conta.depositar(depositarDto.valor);
     return this.contaRepository.atualizarSaldo(conta);
   }
 
-  sacar(numConta: string, valor: number): Conta {
-    if (valor <= 0) {
-      throw new Error('Valor inválido.');
-    }
-
-    const conta = this.findContabyNumeroConta(numConta);
-
-    if (!conta) {
-      throw new Error('Conta não encontrada.');
-    }
-    conta.sacar(valor);
+  async sacar(numConta: string, sacarDto: SacarDto): Promise<Conta> {
+    const conta = this.validarConta(numConta);
+    conta.sacar(sacarDto.valor);
     return this.contaRepository.atualizarSaldo(conta);
   }
 }
