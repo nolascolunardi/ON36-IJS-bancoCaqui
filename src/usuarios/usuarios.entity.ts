@@ -1,7 +1,13 @@
+import { Column } from 'typeorm';
+
 export abstract class Usuario {
+  @Column()
   public nome: string;
+  @Column()
   public cpf: string;
+  @Column()
   public email: string;
+  @Column()
   public telefone: string;
 
   constructor(nome: string, cpf: string, email: string, telefone: string) {
