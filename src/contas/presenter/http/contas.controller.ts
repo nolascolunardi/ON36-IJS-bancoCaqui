@@ -2,64 +2,41 @@ import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ContasService } from '../../application/service/contas.service';
 import { TipoConta } from '../../domain/enums/tipos-conta.enum';
+import { AbrirContaDto } from './dto/abrir-conta.dto';
+import { SacarDto } from './dto/sacar.dto';
+import { DepositarDto } from './dto/depositar.dto';
 
-@Controller('contas')
+@Controller('conta')
 export class ContasController {
   constructor(private readonly contaService: ContasService) {}
 
-  @Post('/abrirConta')
-  abrirConta(
-    @Body('TipoConta') tipoConta: TipoConta,
-    @Body('registroGerente') registroGerente: string,
-    @Body('idCliente') idCliente: number,
-    @Body('numeroConta') numeroConta: string,
-    @Body('saldo') saldo: number,
-  ) {
-    try {
-      return this.contaService.abrirConta(tipoConta, registroGerente, idCliente, numeroConta, saldo);
-    } catch (error) {
-      return error.message;
-    }
+  @Post('/abrir')
+  abrir(@Body() abrirContaDto: AbrirContaDto) {
+    return this.contaService.abrir(abrirContaDto);
   }
 
-  @Delete('/fecharConta/:numeroConta')
-  fecharConta(@Param('numeroConta') numeroConta: string) {
-    try {
-      return this.contaService.fecharConta(numeroConta);
-    } catch (error) {
-      return error.message;
-    }
+  @Delete(':numConta/fechar')
+  fechar(@Param('numConta') numConta: string) {
+    return this.contaService.fechar(numConta);
   }
 
-  @Patch('/atualizar/tipoDeConta/:numeroConta/:tipoConta')
-  atualizarTipoDeConta(@Param('numeroConta') numeroConta: string, @Param('tipoConta') tipoConta: TipoConta) {
-    try {
-      return this.contaService.atualizarTipoDeConta(numeroConta, tipoConta);
-    } catch (error) {
-      return error.message;
-    }
+  @Patch(':numConta/atualizarTipo')
+  atualizarTipo(@Param('numConta') numConta: string, @Param('tipoConta') tipoConta: TipoConta) {
+    return this.contaService.atualizarTipoConta(numConta, tipoConta);
   }
 
-  @Get('/listarContas/:tipoConta')
-  listarContas() {
-    return this.contaService.listarContas();
+  @Get('/listar')
+  listarTodas() {
+    return this.contaService.listarTodas();
   }
 
-  @Post('/depositar/:numeroConta/:valor')
-  depositar(@Param('numeroConta') numeroConta: string, @Param('valor') valor: number) {
-    try {
-      return this.contaService.depositar(numeroConta, valor);
-    } catch (error) {
-      return error.message;
-    }
+  @Post(':numConta/depositar')
+  depositar(@Param('numConta') numConta: string, @Body() depositarDto: DepositarDto) {
+    return this.contaService.depositar(numConta, depositarDto);
   }
 
-  @Post('/sacar/:numeroConta/:valor')
-  sacar(@Param('numeroConta') numeroConta: string, @Param('valor') valor: number) {
-    try {
-      return this.contaService.sacar(numeroConta, valor);
-    } catch (error) {
-      return error.message;
-    }
+  @Post(':numConta/sacar')
+  sacar(@Param('numConta') numConta: string, @Body() sacarDto: SacarDto) {
+    return this.contaService.sacar(numConta, sacarDto);
   }
 }

@@ -7,7 +7,7 @@ import { GerentesModule } from './gerentes/application/gerentes.module';
 import { ContasModule } from './contas/application/contas.module';
 
 @Module({
-  imports: [ClientesModule, UsuariosModule, GerentesModule, ContasModule],
+  imports: [ClientesModule, GerentesModule, ContasModule],
   controllers: [AppController],
   providers: [AppService],
 })
