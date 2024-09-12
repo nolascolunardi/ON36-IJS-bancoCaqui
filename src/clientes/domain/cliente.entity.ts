@@ -7,20 +7,16 @@ export class Cliente extends Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Gerente, (gerente) => gerente.clientes)
+  @ManyToOne(() => Gerente, (gerente) => gerente.clientes, { cascade: true })
   gerente: string;
 
   @Column()
   cep: string;
 
-  @Column({ name: 'is_ativo' })
-  isAtivo: boolean;
-
   constructor(id: string, nome: string, cpf: string, email: string, telefone: string, cep: string, gerenteId: string) {
     super(nome, cpf, email, telefone);
     this.id = id;
     this.cep = cep;
-    this.isAtivo = true;
     this.gerente = gerenteId;
   }
 }
