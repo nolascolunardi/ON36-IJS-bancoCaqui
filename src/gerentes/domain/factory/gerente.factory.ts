@@ -1,8 +1,9 @@
-import { Gerente } from '../gerente';
-import { CriarGerenteDto } from '../../presenter/http/dto/criar-gerente.dto';
+import { Gerente } from '../gerente.entity';
+import { CriarGerenteDto } from '../../presenter/http/dto/criarGerente.dto';
+import { randomUUID } from 'crypto';
 
 export class GerenteFactory {
-  criarGerente(gerenteDto: CriarGerenteDto): Gerente {
-    return new Gerente(gerenteDto.registro, gerenteDto.nome, gerenteDto.cpf, gerenteDto.email, gerenteDto.telefone);
+  criar(gerenteDto: CriarGerenteDto): Gerente {
+    return new Gerente(randomUUID(), gerenteDto.registro, gerenteDto.nome, gerenteDto.cpf, gerenteDto.email, gerenteDto.telefone);
   }
 }
