@@ -1,28 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { Conta } from '../../domain/contas';
-import { ContasDatabase } from './contas.database';
-import { TipoConta } from '../../domain/enums/tipos-conta.enum';
+import { Conta } from '../../domain/conta';
+import { ContasInMemoryDatabase } from './contasInMemory.database';
+import { TipoConta } from '../../domain/enums/tiposConta.enum';
 import { ContasRepository } from '../../application/ports/contas.repository';
 
 @Injectable()
-export class InMemoryContasRepository extends ContasRepository {
+export class ContasInMemoryRepository extends ContasRepository {
   private idCounter: number;
   private Contas: Conta[];
 
-  constructor(private databaseContas: ContasDatabase) {
+  constructor(private databaseContas: ContasInMemoryDatabase) {
     super();
     this.Contas = this.databaseContas.database;
-    this.idCounter = this.Contas.length > 0 ? this.Contas[this.Contas.length - 1].id + 1 : 1;
   }
 
   salvar(conta: Conta): Conta {
-    conta.setIdConta(this.idCounter++);
     this.Contas.push(conta);
     return conta;
   }
 
   deletar(conta: Conta): void {
-    conta.setStatus(false);
+    conta.isAtivo = false;
   }
 
   atualizarSaldo(conta: Conta): Conta {
