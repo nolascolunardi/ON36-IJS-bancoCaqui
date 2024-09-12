@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ClienteService } from '../../application/service/clientes.service';
-import { CriarClienteDto } from './dto/criar-cliente.dto';
+import { CriarClienteDto } from './dto/criarCliente.dto';
 
 @Controller('clientes')
 export class ClientesController {
@@ -15,6 +15,11 @@ export class ClientesController {
   @Get('/')
   listarClientes() {
     return this.ClientesService.listarClientes();
+  }
+
+  @Get('/:emailCliente')
+  buscarCliente(@Param('emailCliente') emailCliente: string) {
+    return this.ClientesService.buscarCliente(emailCliente);
   }
 
   @Delete('/deletar/:emailCliente')
