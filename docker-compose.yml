@@ -11,3 +11,17 @@ services:
     volumes:
       - ./data:/data/postgres
 
+  app:
+    container_name: app-banco-caqui
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    command: sh -c "npm run migration:run && npm run start"
+    volumes:
+      - .:/app
