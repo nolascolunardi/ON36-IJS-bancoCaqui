@@ -1,6 +1,6 @@
-import { ContaCorrente } from '../../domain/conta-corrente';
-import { ContaPoupanca } from '../../domain/conta-poupanca';
+import { ContaCorrente } from '../../domain/contaCorrente.entity';
+import { ContaPoupanca } from '../../domain/contaPoupanca.entity';
 
 export class ContasInMemoryDatabase {
-  database = [new ContaCorrente('asas-aass51551', '123', 2, '1225'), new ContaPoupanca('e41155112-gff5555', '123', 1, '1224')];
+  database = [new ContaCorrente('123', 'lol1-kknmnn-llnn1', '1225'), new ContaPoupanca('123', 'jkseu-lindo1255-amo', '1224')];
 }

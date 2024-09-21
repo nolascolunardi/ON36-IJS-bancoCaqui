@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Gerente } from '../../domain/gerente.entity';
 import { InMemoryGerenteDatabase } from './gerenteInMemory.database';
-import { GerentesRepository } from '../../application/ports/gerentes.repository';
+import { GerenteRepository } from '../../application/ports/gerentes.repository';
 
 @Injectable()
-export class GerenteInMemoryRepository extends GerentesRepository {
+export class GerenteInMemoryRepository extends GerenteRepository {
   private Gerentes: Gerente[];
 
   constructor(private databaseGerentes: InMemoryGerenteDatabase) {
@@ -17,7 +17,9 @@ export class GerenteInMemoryRepository extends GerentesRepository {
     return gerente;
   }
 
-  async deletar(id: string): Promise<void> {}
+  async deletar(gerente: Gerente): Promise<void> {
+    gerente.isAtivo = false;
+  }
 
   async listarTodos(): Promise<Gerente[]> {
     return this.Gerentes;

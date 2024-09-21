@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Conta } from '../../domain/conta';
+import { Conta } from '../../domain/conta.entity';
 import { ContasInMemoryDatabase } from './contasInMemory.database';
 import { TipoConta } from '../../domain/enums/tiposConta.enum';
 import { ContasRepository } from '../../application/ports/contas.repository';
@@ -14,27 +14,34 @@ export class ContasInMemoryRepository extends ContasRepository {
     this.Contas = this.databaseContas.database;
   }
 
-  salvar(conta: Conta): Conta {
+  async salvar(conta: Conta): Promise<Conta> {
     this.Contas.push(conta);
     return conta;
   }
 
-  deletar(conta: Conta): void {
+  async deletar(conta: Conta): Promise<void> {
     conta.isAtivo = false;
   }
 
-  atualizarSaldo(conta: Conta): Conta {
-    const index = this.Contas.findIndex((c) => c.id === conta.id);
-    this.Contas[index] = conta;
-    return conta;
+  async atualizarSaldo(id: string, saldoAtual: number): Promise<void> {
+    const index = this.Contas.findIndex((c) => c.id === id);
+    this.Contas[index].saldo = saldoAtual;
   }
 
-  atualizarTipo(conta: Conta, tipoConta: TipoConta): Conta {
+  async atualizarTipo(conta: Conta, tipoConta: TipoConta): Promise<Conta> {
     conta.tipoConta = tipoConta;
     return conta;
   }
 
-  listarTodas(): Conta[] {
+  async listarTodas(): Promise<Conta[]> {
     return this.Contas;
+  }
+
+  async buscarPorNumeroConta(numeroConta: string): Promise<Conta | undefined> {
+    return this.Contas.find((c) => c.numeroConta === numeroConta);
+  }
+
+  async buscarContasCliente(clienteId: string): Promise<Conta | undefined> {
+    return this.Contas.find((c) => c.id === clienteId);
   }
 }
