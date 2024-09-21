@@ -1,17 +1,16 @@
-import { InMemoryGerenteDatabase } from '../infrastructure/persistence/in-memory.database';
-import { InMemoryRepository } from '../infrastructure/persistence/in-memory.repository';
-import { GerentesRepository } from './ports/gerentes.repository';
-import { GerentesService } from './service/gerentes.service';
+import { GerenteRepository } from './ports/gerentes.repository';
+import { GerenteService } from './service/gerentes.service';
 import { GerentesController } from '../presenter/http/gerentes.controller';
+import { GerenteTypeOrmRepository } from '../infrastructure/database/typeORM/gerenteTypeOrm.repository';
 import { GerenteFactory } from '../domain/factory/gerente.factory';
 
 export const gerentesProviders = [
-  GerentesService,
+  GerenteService,
   {
-    provide: GerentesRepository,
-    useClass: InMemoryRepository,
+    provide: GerenteRepository,
+    useClass: GerenteTypeOrmRepository,
   },
-  InMemoryGerenteDatabase,
+  GerenteTypeOrmRepository,
   GerenteFactory,
   GerentesController,
 ];
