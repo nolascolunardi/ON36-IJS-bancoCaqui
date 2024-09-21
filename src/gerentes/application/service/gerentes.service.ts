@@ -1,66 +1,63 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Gerente } from '../../domain/gerente';
-import { GerentesRepository } from '../ports/gerentes.repository';
-import { CriarGerenteDto } from '../../presenter/http/dto/criar-gerente.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Gerente } from '../../domain/gerente.entity';
+import { GerenteRepository } from '../ports/gerentes.repository';
+import { CriarGerenteDto } from '../../presenter/http/dto/criarGerente.dto';
 import { GerenteFactory } from '../../domain/factory/gerente.factory';
 
 @Injectable()
-export class GerentesService {
+export class GerenteService {
   constructor(
-    private readonly gerenteRepository: GerentesRepository,
+    private readonly gerenteRepository: GerenteRepository,
     private readonly gerenteFactory: GerenteFactory,
   ) {}
 
-  async cadastrarGerente(criarGerenteDto: CriarGerenteDto): Promise<Gerente> {
-    this.validarRegistro(criarGerenteDto.registro);
-    this.validarCPF(criarGerenteDto.cpf);
-    this.validarEmail(criarGerenteDto.email);
+  async cadastrar(gerenteDto: CriarGerenteDto): Promise<Gerente> {
+    await this.validarRegistro(gerenteDto.registro);
+    await this.validarCPF(gerenteDto.cpf);
+    await this.validarEmail(gerenteDto.email);
 
-    const novoGerente = this.gerenteFactory.criarGerente(criarGerenteDto);
-
+    const novoGerente = await this.gerenteFactory.criar(gerenteDto);
     return this.gerenteRepository.salvar(novoGerente);
   }
 
-  validarCPF(cpf: string): void {
-    const gerentes = this.gerenteRepository.listarTodos();
-    const gerenteEncontrado = gerentes.find((gerente) => gerente.cpf === cpf);
-    if (gerenteEncontrado) {
-      throw new ForbiddenException(`CPF inválido.`);
+  async validarRegistro(registro: string): Promise<void> {
+    const gerenteExiste = await this.gerenteRepository.buscarPorRegistro(registro);
+    if (gerenteExiste) {
+      throw new ConflictException('Registro já cadastrado.');
     }
   }
 
-  validarEmail(email: string): void {
-    const gerentes = this.gerenteRepository.listarTodos();
-    const gerenteEncontrado = gerentes.find((gerente) => gerente.email === email);
-    if (gerenteEncontrado) {
-      throw new ConflictException(`Email inválido.`);
+  async validarCPF(cpf: string): Promise<void> {
+    const gerenteExiste = await this.gerenteRepository.buscarPorCPF(cpf);
+    if (gerenteExiste) {
+      throw new ConflictException('CPF já cadastrado.');
     }
   }
 
-  validarRegistro(registro: string): void {
-    const gerentes = this.gerenteRepository.listarTodos();
-    const gerenteEncontrado = gerentes.find((gerente) => gerente.registro === registro);
-    if (gerenteEncontrado) {
-      throw new ConflictException(`Registro inválido.`);
+  async validarEmail(email: string): Promise<void> {
+    const gerenteExiste = await this.gerenteRepository.buscarPorEmail(email);
+    if (gerenteExiste) {
+      throw new ConflictException('Email já cadastrado.');
     }
   }
 
-  async listarGerentes(): Promise<Gerente[]> {
-    return this.gerenteRepository.listarTodos();
+  async listarTodos(): Promise<Gerente[]> {
+    return await this.gerenteRepository.listarTodos();
   }
 
-  async deletarGerente(registro: string): Promise<string> {
-    const index = this.buscarGerentePorRegistro(registro);
-    this.gerenteRepository.deletar(index);
-    return 'Excluido com sucesso';
-  }
-
-  buscarGerentePorRegistro(registro: string): number {
-    const gerentes = this.gerenteRepository.listarTodos();
-    const index = gerentes.findIndex((gerente) => gerente.registro === registro);
-    if (index === -1) {
-      throw new NotFoundException('gerente', 'Gerente com registro não encontrado.');
+  async buscarPorEmail(emailGerente: string): Promise<Gerente> {
+    const gerente = await this.gerenteRepository.buscarPorEmail(emailGerente);
+    if (!gerente) {
+      throw new NotFoundException('Gerente não encontrado.');
     }
-    return index;
+    return gerente;
+  }
+
+  async deletar(emailGerente: string): Promise<void> {
+    const gerente = await this.gerenteRepository.buscarPorEmail(emailGerente);
+    if (!gerente) {
+      throw new NotFoundException('Gerente não encontrado.');
+    }
+    await this.gerenteRepository.deletar(gerente);
   }
 }
