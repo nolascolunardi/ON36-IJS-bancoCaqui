@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class AbrirContaDto {
   @IsNotEmpty()
@@ -10,8 +10,8 @@ export class AbrirContaDto {
   registroGerente: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  idCliente: number;
+  @IsString()
+  idCliente: string;
 
   @IsNotEmpty()
   @IsString()

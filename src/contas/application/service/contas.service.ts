@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ContasFactory } from '../../domain/factories/contas.factory';
-import { TipoConta } from '../../domain/enums/tipos-conta.enum';
-import { Conta } from '../../domain/contas';
+import { TipoConta } from '../../domain/enums/tiposConta.enum';
+import { Conta } from '../../domain/conta.entity';
 import { ContasRepository } from '../ports/contas.repository';
-import { AbrirContaDto } from '../../presenter/http/dto/abrir-conta.dto';
+import { AbrirContaDto } from '../../presenter/http/dto/abrirConta.dto';
 import { DepositarDto } from '../../presenter/http/dto/depositar.dto';
 import { SacarDto } from '../../presenter/http/dto/sacar.dto';
 
@@ -15,52 +15,56 @@ export class ContasService {
   ) {}
 
   async abrir(abrirContaDto: AbrirContaDto): Promise<Conta> {
-    if (this.findContabyNumeroConta(abrirContaDto.numeroConta)) {
-      throw new Error('Conta já existente.');
+    if (await this.contaRepository.buscarPorNumeroConta(abrirContaDto.numeroConta)) {
+      throw new ForbiddenException('Conta já existe.');
     }
 
     const newConta = this.contaFactory.criar(abrirContaDto);
-    this.contaRepository.salvar(newConta);
-    return newConta;
+    return await this.contaRepository.salvar(newConta);
   }
 
-  findContabyNumeroConta(numeroConta: string): Conta {
-    const contas = this.contaRepository.listarTodas();
-    return contas.find((conta) => conta.numeroConta === numeroConta);
+  async fechar(numeroConta: string): Promise<string> {
+    const conta = await this.verificarConta(numeroConta);
+    await this.contaRepository.deletar(conta);
+    return 'Conta deletada com sucesso.';
   }
 
-  validarConta(numeroConta: string): Conta {
-    const conta = this.findContabyNumeroConta(numeroConta);
+  async atualizarTipoConta(numeroConta: string, tipoConta: TipoConta): Promise<Conta> {
+    const conta = await this.verificarConta(numeroConta);
+    return this.contaRepository.atualizarTipo(conta, tipoConta);
+  }
+
+  async listarTodas(): Promise<Conta[]> {
+    return this.contaRepository.listarTodas();
+  }
+
+  async listaContasCliente(clienteId: string): Promise<Conta> {
+    const conta = await this.contaRepository.buscarContasCliente(clienteId);
     if (!conta) {
       throw new NotFoundException('Conta não encontrada.');
     }
     return conta;
   }
 
-  async fechar(numConta: string): Promise<string> {
-    const conta = this.validarConta(numConta);
-    this.contaRepository.deletar(conta);
-    return 'Conta deletada com sucesso.';
-  }
-
-  async atualizarTipoConta(numConta: string, tipoConta: TipoConta): Promise<Conta> {
-    const conta = this.validarConta(numConta);
-    return this.contaRepository.atualizarTipo(conta, tipoConta);
-  }
-
-  listarTodas(): Conta[] {
-    return this.contaRepository.listarTodas();
-  }
-
   async depositar(numConta: string, depositarDto: DepositarDto): Promise<Conta> {
-    const conta = this.validarConta(numConta);
+    const conta = await this.verificarConta(numConta);
     conta.depositar(depositarDto.valor);
-    return this.contaRepository.atualizarSaldo(conta);
+    await this.contaRepository.atualizarSaldo(conta.id, conta.saldo);
+    return conta;
   }
 
   async sacar(numConta: string, sacarDto: SacarDto): Promise<Conta> {
-    const conta = this.validarConta(numConta);
+    const conta = await this.verificarConta(numConta);
     conta.sacar(sacarDto.valor);
-    return this.contaRepository.atualizarSaldo(conta);
+    await this.contaRepository.atualizarSaldo(conta.id, conta.saldo);
+    return conta;
+  }
+
+  async verificarConta(numeroConta: string): Promise<Conta> {
+    const conta = await this.contaRepository.buscarPorNumeroConta(numeroConta);
+    if (!conta) {
+      throw new NotFoundException('Conta não encontrada.');
+    }
+    return conta;
   }
 }

@@ -1,8 +1,20 @@
-import { Cliente } from '../cliente';
-import { CriarClienteDto } from '../../presenter/http/dto/criar-cliente.dto';
+import { Cliente } from '../cliente.entity';
+import { CriarClienteDto } from '../../presenter/http/dto/criarCliente.dto';
+import { randomUUID } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 
 export class ClienteFactory {
   public criar(clienteDto: CriarClienteDto): Cliente {
-    return new Cliente(clienteDto.nome, clienteDto.cpf, clienteDto.email, clienteDto.telefone, clienteDto.cep);
+    const senha = bcrypt.hashSync(clienteDto.senha, 10);
+    return new Cliente(
+      randomUUID(),
+      clienteDto.nome,
+      clienteDto.cpf,
+      clienteDto.email,
+      senha,
+      clienteDto.telefone,
+      clienteDto.cep,
+      clienteDto.registroGerente,
+    );
   }
 }

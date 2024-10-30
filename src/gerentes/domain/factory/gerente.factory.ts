@@ -1,8 +1,11 @@
-import { Gerente } from '../gerente';
-import { CriarGerenteDto } from '../../presenter/http/dto/criar-gerente.dto';
+import { Gerente } from '../gerente.entity';
+import { CriarGerenteDto } from '../../presenter/http/dto/criarGerente.dto';
+import { randomUUID } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 
 export class GerenteFactory {
-  criarGerente(gerenteDto: CriarGerenteDto): Gerente {
-    return new Gerente(gerenteDto.registro, gerenteDto.nome, gerenteDto.cpf, gerenteDto.email, gerenteDto.telefone);
+  async criar(gerenteDto: CriarGerenteDto): Promise<Gerente> {
+    const senha = await bcrypt.hash(gerenteDto.senha, 10);
+    return new Gerente(randomUUID(), gerenteDto.registro, gerenteDto.nome, gerenteDto.cpf, gerenteDto.email, senha, gerenteDto.telefone);
   }
 }

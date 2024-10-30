@@ -1,19 +1,18 @@
-import { InMemoryClientesDatabase } from '../infrastructure/persistence/in-memory.database';
-import { InMemoryClienteRepository } from '../infrastructure/persistence/in-memory.repository';
 import { ClientesController } from '../presenter/http/clientes.controller';
-import { ViaCep } from '../../adapters/via-cep';
+import { ViaCep } from '../adapters/viaCep';
 import { ClienteRepository } from './ports/clientes.repository';
 import { ClienteService } from './service/clientes.service';
 import { ClienteFactory } from '../domain/factory/cliente.factory';
-import { CepValidador } from './ports/cep-validador';
+import { CepValidador } from './ports/cepValidador';
+import { ClienteTypeOrmRepository } from '../infrastructure/database/clienteTypeOrm.repository';
 
 export const clientesProviders = [
   ClienteService,
   {
     provide: ClienteRepository,
-    useClass: InMemoryClienteRepository,
+    useClass: ClienteTypeOrmRepository,
   },
-  InMemoryClientesDatabase,
+  ClienteTypeOrmRepository,
   {
     provide: CepValidador,
     useClass: ViaCep,
